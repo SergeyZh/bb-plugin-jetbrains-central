@@ -9,6 +9,8 @@ Separate work AI providers in bb through JetBrains Central:
 - **Claude Code JetBrains Air** — `central-claude-code`.
 - **Pi JetBrains Air** — `central-pi`.
 
+![JetBrains Central providers in BB: Codex, Claude Code, and Pi JetBrains Air highlighted](docs/screenshots/providers.png)
+
 Each provider has its own icon: the JetBrains mark with a large, colored OpenAI (green), Claude (terracotta), or Pi (purple) badge. The JetBrains mark adapts to bb's light and dark themes; the plugin frontend renders the colored badges through the provider icon API. SVG files provide fallback icons for clients without the plugin frontend.
 
 Select the provider you need when creating a thread. Personal Codex, Claude Code, and Pi remain separate options. The plugin does not change the project provider automatically: you explicitly choose a work profile.

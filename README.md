@@ -15,15 +15,69 @@ Select the provider you need when creating a thread. Personal Codex, Claude Code
 
 ## Requirements and installation
 
-The machine running the thread needs bb with Plugin SDK 0.6.94, Node.js on PATH, Central, and the corresponding agent CLIs. The command `central run <agent>` must work on that machine.
+You need:
+
+- bb >= 0.48 with Plugin SDK >= 0.6.94. Compatibility has been tested with SDK 0.6.94; repeat the checks below after updating bb because this plugin uses its bundled provider bridges.
+- Git on the computer running the bb server, for installation from GitHub.
+- Node.js on PATH, [JetBrains Central](https://www.jetbrains.com/help/central-cli/quickstart.html), and the CLIs for the agents you want to use on the machine running your threads.
+- Central configured with your work access. Check that `central run codex`, `central run claude`, or `central run pi` works for the agents you need.
+
+### Enable the bb command
+
+The desktop app includes the `bb` CLI. To make it available in your regular terminal, open **Settings → General → Command line** in bb and use the install action. Open a new terminal afterward and check:
+
+```sh
+bb --version
+```
+
+This installs the command on the computer running the bb server. Commands run by agents inside bb already have access to it. You do not need to download a separate CLI or install an unrelated npm package named `bb`.
+
+### Install from GitHub
+
+Keep bb running, then run this in your terminal and confirm the installation:
+
+```sh
+bb plugin install https://github.com/SergeyZh/bb-plugin-jetbrains-central
+```
+
+bb downloads the source, installs the dependencies, and builds the plugin automatically. You do not need to clone the repository or run npm or build commands yourself. This source tracks the repository's default branch.
+
+After installation, select **Codex JetBrains Air**, **Claude Code JetBrains Air**, or **Pi JetBrains Air** when creating a thread. Plugin settings are available under **Settings → Installed plugins → JetBrains Central**. The installed plugin ID is `central`.
+
+### Updates
+
+Check for and apply updates:
+
+```sh
+bb plugin outdated
+bb plugin update central
+```
+
+Updates are manual. If an update cannot activate successfully, bb restores the previous version.
+
+### Releases for maintainers
+
+GitHub installation does not require downloadable release archives or committed `dist/` files: bb builds Git plugins during installation and updates. Publishing source commits is sufficient for users tracking the default branch.
+
+For versioned releases, update `version` in `package.json` and `package-lock.json`, run the checks below, commit the changes, and publish a matching Git tag such as `v0.1.0`. A GitHub Release page is optional. Once that tag exists, new users can install a release range:
+
+```sh
+bb plugin install 'git:https://github.com/SergeyZh/bb-plugin-jetbrains-central.git@^0.1.0'
+```
+
+This range accepts compatible `0.1.x` releases when the user runs `bb plugin update central`. Publish each fix with a new version and tag; do not move existing release tags. Installing from npm instead would require publishing a package with prebuilt bundles; npm publication is not required for GitHub installation.
+
+### Local installation for developers
+
+Clone the repository, enter its directory, then run:
 
 ```sh
 npm ci
 bb plugin build
-bb plugin install . --yes
+bb plugin install .
 ```
 
-The plugin is already installed in the current bb instance from this directory. Keep the source files in place when installing from a local path.
+A local installation uses that directory in place, so keep it on disk. After editing the source, rebuild and run `bb plugin reload central`. Local installations do not receive GitHub updates through `bb plugin update`.
 
 ## How routing works
 
@@ -39,7 +93,7 @@ The built-in providers' subagents and native memory are disabled for work profil
 
 ## Settings
 
-Settings → Plugins → JetBrains Central:
+Settings → Installed plugins → JetBrains Central:
 
 - `centralCommand`: path to Central; defaults to `central`.
 - `builtinPluginsDirectory`: optional path to the installed bb's `builtin-plugins` directory **on the machine running the thread**.

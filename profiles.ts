@@ -10,9 +10,9 @@ export const profileSchema = z.object({
 }).strict();
 export type Profile = z.infer<typeof profileSchema>;
 export const defaults: Profile[] = [
-  { id: "codex", displayName: "Codex JetBrains", agent: "codex", bridge: "codex", runArgs: [], args: [] },
-  { id: "claude-code", displayName: "Claude Code JetBrains", agent: "claude", bridge: "claude-code", runArgs: [], args: [] },
-  { id: "pi", displayName: "Pi JetBrains", agent: "pi", bridge: "pi", runArgs: [], args: [] },
+  { id: "codex", displayName: "Codex JetBrains Air", agent: "codex", bridge: "codex", runArgs: [], args: [] },
+  { id: "claude-code", displayName: "Claude Code JetBrains Air", agent: "claude", bridge: "claude-code", runArgs: [], args: [] },
+  { id: "pi", displayName: "Pi JetBrains Air", agent: "pi", bridge: "pi", runArgs: [], args: [] },
 ];
 export function parseProfiles(value: unknown): Profile[] {
   const profiles = z.array(profileSchema).max(32).parse(value);

@@ -33,9 +33,11 @@ test('ACP profile launches through Central and relays a single bridge handshake'
     if(x.id===2){clearTimeout(timeout);x.error?reject(new Error(x.error.message)):resolve(x.result)}
    });
    child.stdin!.write(JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:2,client:{name:'test',version:'1'},grammarVersions:[2,3]}})+'\n');
+   child.stdin!.write(JSON.stringify({jsonrpc:'2.0',id:3,method:'skills/configure',params:{roots:[]}})+'\n');
    child.stdin!.write(JSON.stringify({jsonrpc:'2.0',id:2,method:'model/list',params:{cwd:dir,providerId:'central-gemini',providerOptions:{centralCommand:command,builtinPluginsDirectory:'',centralProfile:{id:'gemini',displayName:'Gemini Work',agent:'gemini',bridge:'acp',args:['--acp']}}}})+'\n');
   });
   assert.equal(messages.filter(x=>x.id===1).length,1);
+  assert.deepEqual(messages.filter(x=>x.id===3).map(x=>x.result),[{ok:true}]);
   assert.ok(result.models.some((m:any)=>m.id==='work-model'),JSON.stringify(result));
  }finally{
   child.stdin!.end();

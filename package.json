@@ -7,13 +7,14 @@
     "bbPluginSdk": ">=0.6.94"
   },
   "bb": {
-    "name": "Central",
+    "name": "JetBrains Central",
     "description": "Separate work AI providers routed through JetBrains Central.",
     "branding": {
-      "icon": "Network"
+      "icon": "./icons/jetbrains.svg"
     },
     "server": "./server.ts",
-    "host": "./host.ts"
+    "host": "./host.ts",
+    "app": "./app.tsx"
   },
   "dependencies": {
     "@get-bb/plugin-sdk": "0.6.94",
@@ -21,9 +22,11 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/react": "^19.3.0",
     "better-sqlite3": "^13.0.3",
     "cron-parser": "^5.10.2",
     "hono": "^4.13.14",
+    "react": "19.3.1",
     "tsx": "^4.20.0",
     "typescript": "^5.7.0"
   },

@@ -1,10 +1,12 @@
-# Central for BB
+# JetBrains Central for BB
 
 Отдельные рабочие AI-провайдеры в bb через JetBrains Central:
 
-- **Codex JetBrains** — `central-codex`.
-- **Claude Code JetBrains** — `central-claude-code`.
-- **Pi JetBrains** — `central-pi`.
+- **Codex JetBrains Air** — `central-codex`.
+- **Claude Code JetBrains Air** — `central-claude-code`.
+- **Pi JetBrains Air** — `central-pi`.
+
+У каждого провайдера своя иконка: знак JetBrains с крупным цветным значком OpenAI (зелёный), Claude (терракотовый) или Pi (фиолетовый). Знак JetBrains подстраивается под светлую и тёмную тему bb; цветные значки рисует фронтенд плагина через API иконок провайдеров. SVG-файлы служат запасными иконками для клиентов без фронтенда плагина.
 
 Выберите нужный провайдер при создании диалога. Личные Codex, Claude Code и Pi остаются отдельными пунктами. Плагин не меняет провайдер проекта автоматически: выбор рабочего профиля остаётся явным.
 
@@ -34,7 +36,7 @@ Codex, Claude Code и Pi используют мосты, поставляемы
 
 ## Настройки
 
-Settings → Plugins → Central:
+Settings → Plugins → JetBrains Central:
 
 - `centralCommand`: путь к Central, по умолчанию `central`.
 - `builtinPluginsDirectory`: необязательный путь к каталогу `builtin-plugins` установленного bb **на машине выполнения**.
@@ -53,7 +55,7 @@ bb plugin reload central
 ```json
 {
   "id": "my-agent",
-  "displayName": "My Agent JetBrains",
+  "displayName": "My Agent JetBrains Air",
   "agent": "SUPPORTED_CENTRAL_AGENT_NAME",
   "bridge": "acp",
   "args": ["AGENT_SPECIFIC_ACP_FLAG"]

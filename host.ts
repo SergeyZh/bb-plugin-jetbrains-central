@@ -3,7 +3,8 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline";
-import { experimental_defineProviderBridge, PROVIDER_BRIDGE_PROTOCOL_VERSION, type ProviderBridgeContext } from "@get-bb/plugin-sdk/provider-bridge";
+import { randomUUID } from "node:crypto";
+import { experimental_defineProviderBridge, PROVIDER_BRIDGE_PROTOCOL_VERSION, skillsConfigureParamsSchema, type ProviderBridgeContext } from "@get-bb/plugin-sdk/provider-bridge";
 import { experimental_acpProviderBridge } from "@get-bb/plugin-sdk/provider-bridge/acp";
 import { z } from "zod";
 import { profileSchema, centralArgs } from "./profiles.js";
@@ -18,12 +19,18 @@ let selectedOptions: Record<string, unknown> = {};
 let initializeLine = "";
 let initializeId: unknown;
 let ready = false;
+let deferredSkills: ReturnType<typeof skillsConfigureParamsSchema.parse> | undefined;
+const skillsReplayId = `central-skills-${randomUUID()}`;
 let closed = false;
 const lifecycle = new AbortController();
 const waiting = new Set<unknown>();
 const pending: string[] = [];
 const send = (value: unknown) => process.stdout.write(JSON.stringify(value) + "\n");
 const failure = (id: unknown, message: string) => send({jsonrpc: "2.0", id, error: {code: -32000, message}});
+function flushPending() {
+  ready = true;
+  for (const queued of pending.splice(0)) child!.stdin!.write(queued + "\n");
+}
 function rewrite(message: any, nativeId: string) {
   if (message.params?.providerId) message.params.providerId = nativeId;
   if (transport === "acp" && message.params) {
@@ -55,6 +62,13 @@ const centralBridge = experimental_defineProviderBridge({
     }
     const options = message.params?.options?.providerOptions ?? message.params?.providerOptions;
     try {
+      // BB configures injected skills before sending any provider launch options.
+      // Save this host-level setup and apply it before the first session request.
+      if (message.method === "skills/configure" && !child) {
+        deferredSkills = skillsConfigureParamsSchema.parse(message.params);
+        send({jsonrpc: "2.0", id: message.id, result: {ok: true}});
+        return;
+      }
       if (message.method === "provider/health") {
         send({jsonrpc: "2.0", id: message.id, result: {supported: false}});
         return;
@@ -106,8 +120,16 @@ const centralBridge = experimental_defineProviderBridge({
           try { value = JSON.parse(output); } catch { return; }
           if (value.id === initializeId && !value.method && !ready) {
             if (value.error) { failure(message.id, "BB native bridge initialization failed"); return; }
-            ready = true;
-            for (const queued of pending.splice(0)) child!.stdin!.write(queued + "\n");
+            if (deferredSkills) {
+              child!.stdin!.write(JSON.stringify({jsonrpc: "2.0", id: skillsReplayId, method: "skills/configure", params: deferredSkills}) + "\n");
+            } else flushPending();
+          } else if (value.id === skillsReplayId && !value.method) {
+            if (value.error) {
+              for (const id of waiting) failure(id, "Could not apply BB skills to the Central provider: " + value.error.message);
+              waiting.clear(); stop(); return;
+            }
+            deferredSkills = undefined;
+            flushPending();
           } else {
             if (!value.method) waiting.delete(value.id);
             process.stdout.write(output + "\n");

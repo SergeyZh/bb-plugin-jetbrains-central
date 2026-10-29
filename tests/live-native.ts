@@ -38,6 +38,7 @@ const providerOptions={centralProfile:{id:profileId,displayName:'Work test',agen
 const options={permissionMode:'accept-edits',permissionScope:'workspace',approvalReviewer:'user',permissionEscalation:'deny',providerOptions};
 try{
  await rpc('initialize',{protocolVersion:2,client:{name:'central-test',version:'1'},grammarVersions:[2,3]});
+ await rpc('skills/configure',{roots:[]});
  const start=await rpc('thread/start',{threadId:'central-smoke',cwd:dir,options,instructionMode:'append'});
  identity??=start.providerThreadId;
  if(!identity)throw new Error('Missing native session identity');

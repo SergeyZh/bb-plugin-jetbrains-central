@@ -1,5 +1,6 @@
 import type { BbPluginApi, PluginProviderDeclaration } from "@get-bb/plugin-sdk";
 import { defaults, parseProfiles } from "./profiles.js";
+import { providerMarks } from "./artwork.js";
 
 export default async function central(bb: BbPluginApi) {
   const settings = bb.settings.define({
@@ -13,8 +14,11 @@ export default async function central(bb: BbPluginApi) {
     const claude = profile.bridge === "claude-code";
     const native = profile.bridge !== "acp";
     const declaration: PluginProviderDeclaration = {
-      id: `central-${profile.id}`, displayName: profile.displayName, family: "central", icon: "Network",
-      strings: { signInHint: "Run central login on this machine.", expiredHint: "Check central run for this agent on this machine.", installUrl: "https://www.jetbrains.com/help/central-cli/quickstart.html" },
+      id: `central-${profile.id}`, displayName: profile.displayName, family: "central", icon: native ? `./icons/jetbrains-${profile.bridge}.svg` : "./icons/jetbrains.svg",
+      strings: {
+        signInHint: "Run central login on this machine.", expiredHint: "Check central run for this agent on this machine.", installUrl: "https://www.jetbrains.com/help/central-cli/quickstart.html",
+        ...(native ? {iconTint: {light: providerMarks[profile.bridge as keyof typeof providerMarks].color, dark: providerMarks[profile.bridge as keyof typeof providerMarks].color}} : {}),
+      },
       maintenance: { health: false, usage: false, installation: false },
       capabilities: {
         supportsServiceTier: codex || claude, supportsNativeUserQuestion: claude,

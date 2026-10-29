@@ -1,18 +1,21 @@
+[![en](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
+[![ru](https://img.shields.io/badge/lang-ru-green.svg)](README.ru.md)
+
 # JetBrains Central for BB
 
-Отдельные рабочие AI-провайдеры в bb через JetBrains Central:
+Separate work AI providers in bb through JetBrains Central:
 
 - **Codex JetBrains Air** — `central-codex`.
 - **Claude Code JetBrains Air** — `central-claude-code`.
 - **Pi JetBrains Air** — `central-pi`.
 
-У каждого провайдера своя иконка: знак JetBrains с крупным цветным значком OpenAI (зелёный), Claude (терракотовый) или Pi (фиолетовый). Знак JetBrains подстраивается под светлую и тёмную тему bb; цветные значки рисует фронтенд плагина через API иконок провайдеров. SVG-файлы служат запасными иконками для клиентов без фронтенда плагина.
+Each provider has its own icon: the JetBrains mark with a large, colored OpenAI (green), Claude (terracotta), or Pi (purple) badge. The JetBrains mark adapts to bb's light and dark themes; the plugin frontend renders the colored badges through the provider icon API. SVG files provide fallback icons for clients without the plugin frontend.
 
-Выберите нужный провайдер при создании диалога. Личные Codex, Claude Code и Pi остаются отдельными пунктами. Плагин не меняет провайдер проекта автоматически: выбор рабочего профиля остаётся явным.
+Select the provider you need when creating a thread. Personal Codex, Claude Code, and Pi remain separate options. The plugin does not change the project provider automatically: you explicitly choose a work profile.
 
-## Требования и установка
+## Requirements and installation
 
-Нужны bb с Plugin SDK 0.6.94, Node.js на PATH, Central и соответствующие CLI агентов на машине, где выполняется диалог. Команда `central run <agent>` должна работать на этой машине.
+The machine running the thread needs bb with Plugin SDK 0.6.94, Node.js on PATH, Central, and the corresponding agent CLIs. The command `central run <agent>` must work on that machine.
 
 ```sh
 npm ci
@@ -20,37 +23,37 @@ bb plugin build
 bb plugin install . --yes
 ```
 
-Плагин уже установлен в текущий bb из этой папки. Исходники должны оставаться на месте при установке по локальному пути.
+The plugin is already installed in the current bb instance from this directory. Keep the source files in place when installing from a local path.
 
-## Как устроена маршрутизация
+## How routing works
 
-Каждый рабочий профиль запускает CLI через `central run <agent> -- …`. Токены, прокси и организационные настройки предоставляет Central. Используется активный источник доступа Central (`central access`); переключение источника влияет на последующие рабочие запуски всех профилей. При ошибке Central плагин не переключается на личный запуск. Учётные данные не хранятся в настройках плагина и не выводятся в его журнал.
+Each work profile launches its CLI through `central run <agent> -- …`. Central supplies tokens, proxies, and organization settings. The plugin uses Central's active access source (`central access`); switching the source affects subsequent work launches for all profiles. If Central fails, the plugin does not fall back to a personal account. Credentials are neither stored in plugin settings nor written to its log.
 
-Codex, Claude Code и Pi используют мосты, поставляемые с установленным bb. Плагин загружает их экспорт `experimental_providerBridge`; файлы bb не изменяются и не копируются. Это адаптер совместимости с установленным bb, а не публичный API наследования провайдеров. После обновления bb стоит повторить проверки ниже. Автопоиск каталога поддерживает macOS и типовую глобальную установку Node на Linux; другой путь можно указать явно.
+Codex, Claude Code, and Pi use the bridges bundled with the installed bb. The plugin loads their `experimental_providerBridge` export; bb files are neither modified nor copied. This is a compatibility adapter for the installed bb, not a public API for extending providers. Repeat the checks below after updating bb. Directory discovery supports macOS and typical global Node installations on Linux; you can specify another path explicitly.
 
-Для Codex выделен собственный `CODEX_HOME` в данных плагина. Central добавляет `--profile`, который Codex 0.165.0 не принимает в режиме `app-server`. Адаптер переносит созданный Central профиль в изолированный `config.toml`, сохраняет корпоративные plugins/marketplaces/features и передаёт параметры подключения без этого флага. Личный `~/.codex` не изменяется.
+Codex has its own `CODEX_HOME` in the plugin's data directory. Central adds `--profile`, which Codex 0.165.0 does not accept in `app-server` mode. The adapter transfers the profile created by Central into an isolated `config.toml`, preserves organization plugins/marketplaces/features, and passes connection settings without that flag. Your personal `~/.codex` is unchanged.
 
-Для Pi каталог запрашивается у процесса с уже загруженным расширением Central. Доступны маршруты `openai`, `anthropic` и `google-vertex`, которые расширение Central переопределяет. Личные и локальные маршруты из Pi скрыты и отклоняются при явном выборе.
+For Pi, the model catalog is requested from a process that has already loaded the Central extension. Available routes are `openai`, `anthropic`, and `google-vertex`, which the Central extension overrides. Personal and local Pi routes are hidden and rejected if selected explicitly.
 
-Вложенные агенты встроенных провайдеров и их нативная память выключены для рабочих профилей. Плагин не сообщает лимиты личной подписки как лимиты Central; отдельного индикатора квоты Central пока нет. Общие инструменты и конфигурация проекта передаются стандартным протоколом bb. Дополнительные интерфейсы встроенных плагинов, например Codex Goals и специальные карточки Codex, не дублируются.
+The built-in providers' subagents and native memory are disabled for work profiles. The plugin does not report personal subscription limits as Central limits; a separate Central quota indicator is not available yet. Shared tools and project configuration are passed through bb's standard protocol. Additional built-in plugin interfaces, such as Codex Goals and specialized Codex cards, are not duplicated.
 
-## Настройки
+## Settings
 
 Settings → Plugins → JetBrains Central:
 
-- `centralCommand`: путь к Central, по умолчанию `central`.
-- `builtinPluginsDirectory`: необязательный путь к каталогу `builtin-plugins` установленного bb **на машине выполнения**.
-- `profiles`: JSON-массив рабочих профилей.
+- `centralCommand`: path to Central; defaults to `central`.
+- `builtinPluginsDirectory`: optional path to the installed bb's `builtin-plugins` directory **on the machine running the thread**.
+- `profiles`: JSON array of work profiles.
 
-После изменения настроек выполните:
+After changing settings, run:
 
 ```sh
 bb plugin reload central
 ```
 
-Профиль содержит постоянный `id`, `displayName`, имя агента для Central (`agent`), мост (`bridge`) и дополнительные аргументы CLI агента (`args`). `runArgs` передаются самому `central run` перед разделителем `--`: например, `['--provider=openai']` для Copilot. Мосты: `codex`, `claude-code`, `pi`, `acp`. Не меняйте ID уже используемого профиля: на него ссылается история диалогов.
+A profile contains a permanent `id`, a `displayName`, the Central agent name (`agent`), a bridge (`bridge`), and additional agent CLI arguments (`args`). `runArgs` are passed to `central run` itself before the `--` separator: for example, `['--provider=openai']` for Copilot. Available bridges are `codex`, `claude-code`, `pi`, and `acp`. Do not change the ID of a profile that is already in use: thread history references it.
 
-Дополнительного ACP-агента можно подключить профилем такого вида, включив его в массив вместе с нужными существующими профилями:
+To connect an additional ACP agent, add a profile like this to the array alongside the existing profiles you need:
 
 ```json
 {
@@ -62,9 +65,9 @@ bb plugin reload central
 }
 ```
 
-Замените заглушки именем агента из `central run --help` и реальными аргументами ACP его CLI. Central должен поддерживать агента, а CLI должен уметь ACP через stdin/stdout. Плагин не добавляет в Central поддержку произвольного агента и не устанавливает CLI автоматически. ACP-транспорт покрыт локальным протокольным тестом; реальные Gemini, Junie и Copilot отдельно не проверялись.
+Replace the placeholders with an agent name from `central run --help` and the actual ACP arguments for its CLI. Central must support the agent, and the CLI must support ACP over stdin/stdout. The plugin does not add support for arbitrary agents to Central or install CLIs automatically. ACP transport is covered by a local protocol test; real Gemini, Junie, and Copilot integrations have not been tested separately.
 
-## Проверки
+## Verification
 
 ```sh
 npm run typecheck
@@ -75,7 +78,7 @@ bb provider models central-claude-code
 bb provider models central-pi
 ```
 
-Реальные smoke-проверки используют рабочую подписку: отправляют ровно один короткий запрос без инструментов, проверяют ответ и восстановление сессии. Не входят в обычный `npm test`.
+Live smoke checks use the work subscription: they send exactly one short request without tools, verify the response, and check session resumption. They are not included in the regular `npm test` run.
 
 ```sh
 npx tsx tests/live-native.ts codex
@@ -83,4 +86,8 @@ npx tsx tests/live-native.ts claude-code
 npx tsx tests/live-native.ts pi
 ```
 
-На текущей машине все три проверки успешно прошли с Central 2.1.0 и Codex 0.165.0.
+All three checks passed on the current machine with Central 2.1.0 and Codex 0.165.0.
+
+## License
+
+[MIT](LICENSE). Third-party marks and icon attribution are documented in [icons/README.md](icons/README.md).

@@ -27,7 +27,7 @@ test("real Central allowance becomes credits without USD cost or an inferred acc
   assert.equal(measurement.accountKey, null);
   assert.equal(measurement.usage.status, "ok");
   if (measurement.usage.status !== "ok") throw new Error("Expected quota");
-  assert.equal(measurement.usage.windows[0].label, "Central: 7.02 / 200.00 credits");
+  assert.equal(measurement.usage.windows[0].label, "193/200 cr.");
   assert.equal(measurement.usage.windows[0].cost, null);
   assert.ok(Math.abs(measurement.usage.windows[0].usedPercent - 3.51) < 1e-10);
 });

@@ -13,6 +13,8 @@ Credit allowance appears in bb's Provider usage sidebar disclosure under
 `central` for each machine, and in the context of Central threads. Main and
 top-up balances are separate. Values are credits, including CLI fields named
 `usedDollars` and `maxDollars`; never label them USD or infer thread costs.
+Display remaining credits rounded to whole numbers. Provider usage's percentage
+bar still represents consumption; preserve its `usedPercent` semantics.
 
 For diagnostics, use `central limit --json` on the thread's execution machine.
 If unauthenticated, the user must sign in with `central login` on that machine.

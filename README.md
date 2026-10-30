@@ -97,10 +97,10 @@ The built-in providers' subagents and native memory are disabled for work profil
 
 The plugin reads `central limit --json` on the machine running Central and exposes the active access source's allowance in two places:
 
-- **Provider usage**: open the chart button at the bottom of the sidebar and select **central** on the relevant machine. The built-in **Provider usage** plugin must be enabled. A single Central resource covers Codex, Claude Code, Pi, and custom Central profiles.
-- **Thread context**: Central threads show `Central: 7.02 / 200.00 credits` above the composer. Click it for available credits, the reset date, last update, and **Refresh credits**. When bb uses a context card, **Central credits** appears there with a refresh action and details in its tooltip.
+- **Provider usage**: open the chart button at the bottom of the sidebar and select **central** on the relevant machine. Compact labels such as `193/200 cr.` show remaining credits and the limit; `(+)` marks top-up credits. The built-in **Provider usage** plugin must be enabled. A single Central resource covers Codex, Claude Code, Pi, and custom Central profiles.
+- **Thread context**: Central threads show remaining credits, for example `Central: 193 / 200 credits left`, above the composer. Click it for balance details, the reset date, last update, and **Refresh credits**. When bb uses a context card, **Central credits** appears there with a refresh action and details in its tooltip.
 
-Amounts are **credits**, including CLI fields named `usedDollars` and `maxDollars`; they are never sent to bb's USD cost fields. Main and nonempty top-up balances are separate; top-up credits have no assumed reset date. These are account allowances, not the cost of the current thread.
+Amounts are **credits**, including CLI fields named `usedDollars` and `maxDollars`; they are never sent to bb's USD cost fields. All credit amounts are rounded to whole numbers for display. Labels show remaining credits; Provider usage's percentage bar still indicates consumption. Main and nonempty top-up balances are separate; top-up credits have no assumed reset date. These are account allowances, not the cost of the current thread.
 
 Reads share a 60-second cache per machine. Visible thread context refreshes every minute and after Central turns finish; manual refresh bypasses the cache. Transient errors retain the last measurement with a stale indication in thread context. Sign-in failures clear old balances. On another machine, install Central and run `central login` there; credentials remain managed by Central. Accounts on different machines are not merged by email.
 

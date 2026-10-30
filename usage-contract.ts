@@ -58,17 +58,20 @@ export const usageSourceContract = defineRpcContract({
 });
 
 export function credits(value: number): string {
-  return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return value.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 export function balanceLabel(balance: CreditBalance): string {
-  return `${balance.label}: ${credits(balance.used)} / ${credits(balance.limit)} credits`;
+  return `${balance.label}: ${credits(balance.available)} / ${credits(balance.limit)} credits left`;
 }
 export function sourceMeasurement(value: CentralUsage): z.infer<typeof sourceMeasurementSchema> {
   const common = { accountEmail: value.accountEmail, planLabel: value.planLabel, plan: null };
   const usage = value.status === "ok" ? {
     ...common, status: "ok" as const,
     windows: value.balances.map(balance => ({
-      id: balance.id, kind: "custom" as const, label: balanceLabel(balance),
+      // Provider usage reserves a narrow label column. Put both amounts first
+      // and keep units short so the limit stays visible at normal sidebar widths.
+      id: balance.id, kind: "custom" as const,
+      label: `${credits(balance.available)}/${credits(balance.limit)} cr.${balance.id === "top-up" ? " (+)" : ""}`,
       usedPercent: balance.limit > 0 ? balance.used / balance.limit * 100 : balance.used > 0 ? 100 : 0,
       resetsAt: balance.resetsAt, model: null, cost: null,
     })),

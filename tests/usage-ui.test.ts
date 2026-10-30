@@ -18,21 +18,21 @@ const props: ExperimentalThreadContextSegmentProps = {
   threadId: "work", projectId: "project", environment: { id: "env" }, segments: [], isExpanded: true, onToggle() {},
 };
 
-test("Central banner and context card show credits; refresh uses the forced read", async () => {
+test("Central banner and context card show rounded remaining credits; refresh uses the forced read", async () => {
   const app = await loadPluginApp(() => import("../app.js"));
   const segment = app.threadContextSegments[0];
   const slot = renderSlot({ component: segment.summary }, props, {
     experimental_rpcContract: threadUsageContract, rpc: { threadUsage: () => value },
   });
   try {
-    await slot.findByText("Central: 7.02 / 200.00 credits");
+    await slot.findByText("Central: 193 / 200 credits left");
     assert.ok(!slot.container.textContent?.includes("$"));
   } finally { slot.lifecycle.unmount(); }
   const row = renderSlot(app.threadContextCardRows[0], props, {
     experimental_rpcContract: threadUsageContract, rpc: { threadUsage: () => value }, threadContextKind: "card",
   });
   try {
-    await row.findByText(/7\.02 \/ 200\.00 credits/);
+    await row.findByText(/193 \/ 200 credits left/);
     fireEvent.click(row.getByRole("button", { name: "Refresh Central credits" }));
     await waitFor(() => {
       assert.ok(row.inspection.rpcCalls.some(call => call.method === "threadUsage" && (call.input as any).refresh === true));
@@ -67,7 +67,7 @@ test("stale credits retain their value and auth failures explain how to sign in"
   });
   try {
     await slot.findByText("Data may be out of date. Refresh to retry.");
-    assert.ok(slot.container.textContent?.includes("7.02 / 200.00 credits"));
+    assert.ok(slot.container.textContent?.includes("193 / 200 credits left"));
   } finally { slot.lifecycle.unmount(); }
   const auth = renderSlot({ component: app.threadContextSegments[0].summary }, props, {
     experimental_rpcContract: threadUsageContract,

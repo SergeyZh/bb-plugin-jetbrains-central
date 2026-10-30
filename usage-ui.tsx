@@ -43,13 +43,13 @@ function useUsage(threadId: string) {
 export function usageSummary(value: CentralUsage | undefined, error = false): string {
   if (!value) return error ? "Credits unavailable" : "Loading credits…";
   const balance = value.balances[0];
-  if (balance) return `${credits(balance.used)} / ${credits(balance.limit)} credits${value.stale || error ? " · stale" : ""}`;
+  if (balance) return `${credits(balance.available)} / ${credits(balance.limit)} credits left${value.stale || error ? " · stale" : ""}`;
   return value.status === "unauthenticated" ? "Sign in to Central" : value.status === "not_installed" ? "Central not installed" : "Credits unavailable";
 }
 
 function usageTitle(value: CentralUsage | undefined, error: boolean): string {
   if (!value) return error ? "Central credits could not be loaded. Refresh to retry." : "Loading Central credits";
-  return [value.planLabel, ...value.balances.map(balance => `${balanceLabel(balance)}; ${credits(balance.available)} credits available${balance.resetsAt ? `; resets ${new Date(balance.resetsAt).toLocaleString()}` : ""}`),
+  return [value.planLabel, ...value.balances.map(balance => `${balanceLabel(balance)}${balance.resetsAt ? `; resets ${new Date(balance.resetsAt).toLocaleString()}` : ""}`),
     value.message, value.observedAt ? `Updated ${new Date(value.observedAt).toLocaleString()}` : null,
     error || value.stale ? "Data may be out of date." : null].filter(Boolean).join("\n");
 }
@@ -71,7 +71,7 @@ export function CentralUsageDetails({ threadId, isExpanded }: ExperimentalThread
       <button type="button" disabled={refreshing} onClick={() => void refresh()} className="hover:text-foreground disabled:opacity-50">{refreshing ? "Refreshing…" : "Refresh credits"}</button></div>
     {value?.balances.map(balance => <div key={balance.id}>
       <div>{balanceLabel(balance)}</div>
-      <div>{credits(balance.available)} credits available{balance.resetsAt ? ` · Resets ${new Date(balance.resetsAt).toLocaleString()}` : ""}</div>
+      {balance.resetsAt ? <div>Resets {new Date(balance.resetsAt).toLocaleString()}</div> : null}
     </div>)}
     {value?.message ? <p>{value.message}</p> : null}
     {error || value?.stale ? <p>Data may be out of date. Refresh to retry.</p> : null}

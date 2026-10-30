@@ -11,7 +11,7 @@ import {stripCentralProfile,codexWrapper,claudeWrapper,nativeLaunchEnv} from '..
 import {isWorkPiModel,piModels} from '../pi.js';
 
 test('package depends only on published SDK entrypoints',()=>{
- const scan=experimental_scanPublicSdkOnly(process.cwd(),{allow:[/^react$/]});
+ const scan=experimental_scanPublicSdkOnly(process.cwd(),{allow:[/^react$/, /^jsdom$/, /^@testing-library\/react$/]});
  assert.deepEqual(scan.violations,[]);
  assert.deepEqual(scan.privateDependencies,[]);
 });

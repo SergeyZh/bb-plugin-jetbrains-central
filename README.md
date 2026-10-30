@@ -19,7 +19,7 @@ Select the provider you need when creating a thread. Personal Codex, Claude Code
 
 You need:
 
-- bb >= 0.48 with Plugin SDK >= 0.6.94. Compatibility has been tested with SDK 0.6.94; repeat the checks below after updating bb because this plugin uses its bundled provider bridges.
+- bb >= 0.48 with Plugin SDK >= 0.6.104. Compatibility has been tested with SDK 0.6.104; repeat the checks below after updating bb because this plugin uses its bundled provider bridges.
 - Git on the computer running the bb server, for installation from GitHub.
 - Node.js on PATH, [JetBrains Central](https://www.jetbrains.com/help/central-cli/quickstart.html), and the CLIs for the agents you want to use on the machine running your threads.
 - Central configured with your work access. Check that `central run codex`, `central run claude`, or `central run pi` works for the agents you need.
@@ -91,7 +91,18 @@ Codex has its own `CODEX_HOME` in the plugin's data directory. Central adds `--p
 
 For Pi, the model catalog is requested from a process that has already loaded the Central extension. Available routes are `openai`, `anthropic`, and `google-vertex`, which the Central extension overrides. Personal and local Pi routes are hidden and rejected if selected explicitly.
 
-The built-in providers' subagents and native memory are disabled for work profiles. The plugin does not report personal subscription limits as Central limits; a separate Central quota indicator is not available yet. Shared tools and project configuration are passed through bb's standard protocol. Additional built-in plugin interfaces, such as Codex Goals and specialized Codex cards, are not duplicated.
+The built-in providers' subagents and native memory are disabled for work profiles. Personal subscription limits are never reported as Central limits. Shared tools and project configuration are passed through bb's standard protocol. Additional built-in plugin interfaces, such as Codex Goals and specialized Codex cards, are not duplicated.
+
+## Central credits
+
+The plugin reads `central limit --json` on the machine running Central and exposes the active access source's allowance in two places:
+
+- **Provider usage**: open the chart button at the bottom of the sidebar and select **central** on the relevant machine. The built-in **Provider usage** plugin must be enabled. A single Central resource covers Codex, Claude Code, Pi, and custom Central profiles.
+- **Thread context**: Central threads show `Central: 7.02 / 200.00 credits` above the composer. Click it for available credits, the reset date, last update, and **Refresh credits**. When bb uses a context card, **Central credits** appears there with a refresh action and details in its tooltip.
+
+Amounts are **credits**, including CLI fields named `usedDollars` and `maxDollars`; they are never sent to bb's USD cost fields. Main and nonempty top-up balances are separate; top-up credits have no assumed reset date. These are account allowances, not the cost of the current thread.
+
+Reads share a 60-second cache per machine. Visible thread context refreshes every minute and after Central turns finish; manual refresh bypasses the cache. Transient errors retain the last measurement with a stale indication in thread context. Sign-in failures clear old balances. On another machine, install Central and run `central login` there; credentials remain managed by Central. Accounts on different machines are not merged by email.
 
 ## Settings
 

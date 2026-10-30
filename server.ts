@@ -1,6 +1,7 @@
 import type { BbPluginApi, PluginProviderDeclaration } from "@get-bb/plugin-sdk";
 import { defaults, parseProfiles } from "./profiles.js";
 import { providerMarks } from "./artwork.js";
+import { registerUsage } from "./usage-server.js";
 
 export default async function central(bb: BbPluginApi) {
   const settings = bb.settings.define({
@@ -9,7 +10,9 @@ export default async function central(bb: BbPluginApi) {
     profiles: { type: "string", label: "Work provider profiles (JSON)", default: JSON.stringify(defaults) },
   });
   const values = await settings.get();
-  for (const profile of parseProfiles(JSON.parse(values.profiles))) {
+  const profiles = parseProfiles(JSON.parse(values.profiles));
+  registerUsage(bb, values.centralCommand, new Set(profiles.map(profile => `central-${profile.id}`)));
+  for (const profile of profiles) {
     const codex = profile.bridge === "codex";
     const claude = profile.bridge === "claude-code";
     const native = profile.bridge !== "acp";

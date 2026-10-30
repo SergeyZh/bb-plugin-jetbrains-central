@@ -10,6 +10,16 @@ import { z } from "zod";
 import { profileSchema, centralArgs } from "./profiles.js";
 import { findNativeBridge, claudeWrapper, nativeLaunchEnv, codexWrapper, resolveOnPath, runner } from "./native.js";
 import { piModels, isWorkPiModel } from "./pi.js";
+import { experimental_defineHostEntry } from "@get-bb/plugin-sdk/host";
+import { usageHostContract } from "./usage-contract.js";
+import { collectUsage } from "./usage.js";
+
+export default experimental_defineHostEntry({
+  contract: usageHostContract,
+  handlers: {
+    centralUsage: ({ command }, ctx) => collectUsage(command, ctx.signal),
+  },
+});
 
 const launchSchema = z.object({ centralProfile: profileSchema, centralCommand: z.string().min(1), builtinPluginsDirectory: z.string().default("") });
 let context: ProviderBridgeContext;

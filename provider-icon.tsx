@@ -1,6 +1,12 @@
 import { useId } from "react";
 import { jetBrainsPath, providerMarks, type ProviderMark } from "./artwork.js";
 
+export function CentralIcon({ className }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+    <path d={jetBrainsPath} transform="translate(1 1) scale(1.25)" />
+  </svg>;
+}
+
 export function CentralProviderIcon({ provider, className }: { provider: ProviderMark; className?: string }) {
   const maskId = `central-mark-${useId().replaceAll(":", "")}`;
   const mark = providerMarks[provider];

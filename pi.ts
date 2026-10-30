@@ -35,6 +35,7 @@ export async function piModels(command: string, profile: Profile, signal?: Abort
           description: `${m.provider} via JetBrains Central`, isDefault: false,
           supportedReasoningEfforts: (m.reasoning ? ["none", "low", "medium", "high"] : ["none"]).map(reasoningEffort => ({reasoningEffort, description: reasoningEffort})),
           defaultReasoningEffort: m.reasoning ? "medium" : "none",
+          reasoningDiscovery: "known",
         }));
       if (!models.length) return finish(new Error("Central Pi returned no work models"));
       const preferred = models.find((m: any) => m.id === "anthropic/claude-sonnet-4-6") ?? models[0];

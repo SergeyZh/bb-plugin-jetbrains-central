@@ -9,7 +9,7 @@
   },
   "bb": {
     "name": "JetBrains Central",
-    "description": "Separate work AI providers routed through JetBrains Central.",
+    "description": "Use work AI subscriptions alongside personal accounts and see shared JetBrains Central credits in BB.",
     "branding": {
       "icon": "./icons/jetbrains.svg"
     },

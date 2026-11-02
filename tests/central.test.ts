@@ -17,7 +17,7 @@ test('package depends only on published SDK entrypoints',()=>{
 });
 
 test('registers separate work identities and never changes personal provider IDs',async()=>{
- const {bb,harness}=createFakePluginHost({experimental_hostEntry:true});
+ const {bb,harness}=createFakePluginHost({pluginId:'jetbrains-central',experimental_hostEntry:true});
  await plugin(bb);
  const providers=harness.registrations.providerRegistrations;
  assert.deepEqual(providers.map(p=>p.id),['central-codex','central-claude-code','central-pi']);

@@ -3,6 +3,8 @@
 
 # JetBrains Central for BB
 
+> Это неофициальный плагин, созданный энтузиастом. Он не является официальным продуктом JetBrains.
+
 Отдельные рабочие AI-провайдеры в bb через JetBrains Central:
 
 - **Codex JetBrains Air** — `central-codex`.
@@ -44,7 +46,7 @@ bb plugin install https://github.com/SergeyZh/bb-plugin-jetbrains-central
 
 bb сам скачает исходники, установит зависимости и соберёт плагин. Вручную клонировать репозиторий, запускать npm или сборку не требуется. Такая установка отслеживает основную ветку репозитория.
 
-После установки выберите **Codex JetBrains Air**, **Claude Code JetBrains Air** или **Pi JetBrains Air** при создании диалога. Настройки плагина доступны в **Settings → Installed plugins → JetBrains Central**. ID установленного плагина — `central`.
+После установки выберите **Codex JetBrains Air**, **Claude Code JetBrains Air** или **Pi JetBrains Air** при создании диалога. Настройки плагина доступны в **Settings → Installed plugins → JetBrains Central**. ID установленного плагина — `jetbrains-central`.
 
 ### Обновления
 
@@ -52,7 +54,7 @@ bb сам скачает исходники, установит зависимо
 
 ```sh
 bb plugin outdated
-bb plugin update central
+bb plugin update jetbrains-central
 ```
 
 Обновления выполняются вручную. Если новая версия не сможет успешно запуститься, bb восстановит предыдущую.
@@ -67,7 +69,7 @@ bb plugin update central
 bb plugin install 'git:https://github.com/SergeyZh/bb-plugin-jetbrains-central.git@^0.1.0'
 ```
 
-Такой диапазон позволяет получать совместимые версии `0.1.x` командой `bb plugin update central`. Для каждого исправления выпускайте новую версию и новый тег; не переносите существующие теги релизов. При установке из npm потребовалась бы публикация пакета с готовыми сборками, но для установки из GitHub публикация в npm не нужна.
+Такой диапазон позволяет получать совместимые версии `0.1.x` командой `bb plugin update jetbrains-central`. Для каждого исправления выпускайте новую версию и новый тег; не переносите существующие теги релизов. При установке из npm потребовалась бы публикация пакета с готовыми сборками, но для установки из GitHub публикация в npm не нужна.
 
 ### Локальная установка для разработчиков
 
@@ -79,7 +81,7 @@ bb plugin build
 bb plugin install .
 ```
 
-Локальная установка использует этот каталог напрямую, поэтому его нужно сохранить на диске. После изменения исходников пересоберите плагин и выполните `bb plugin reload central`. Локальные установки не получают обновления из GitHub через `bb plugin update`.
+Локальная установка использует этот каталог напрямую, поэтому его нужно сохранить на диске. После изменения исходников пересоберите плагин и выполните `bb plugin reload jetbrains-central`. Локальные установки не получают обновления из GitHub через `bb plugin update`.
 
 ## Как устроена маршрутизация
 
@@ -115,7 +117,7 @@ Settings → Installed plugins → JetBrains Central:
 После изменения настроек выполните:
 
 ```sh
-bb plugin reload central
+bb plugin reload jetbrains-central
 ```
 
 Профиль содержит постоянный `id`, `displayName`, имя агента для Central (`agent`), мост (`bridge`) и дополнительные аргументы CLI агента (`args`). `runArgs` передаются самому `central run` перед разделителем `--`: например, `['--provider=openai']` для Copilot. Мосты: `codex`, `claude-code`, `pi`, `acp`. Не меняйте ID уже используемого профиля: на него ссылается история диалогов.

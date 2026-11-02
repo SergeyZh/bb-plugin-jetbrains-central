@@ -1,5 +1,5 @@
 ---
-name: central
+name: jetbrains-central
 description: Use JetBrains Central work providers and inspect their shared credit allowance in BB.
 ---
 
@@ -23,12 +23,12 @@ Never read, print, or copy credentials. Do not forward raw CLI stderr.
 The plugin exposes discoverable RPC methods
 `provider-usage.v1.listResources` (cheap inventory) and
 `provider-usage.v1.getResource` (`resourceId` from inventory, `refresh` boolean).
-Use `bb plugin rpc call central <method> --input-file <json-path> --json`.
+Use `bb plugin rpc call jetbrains-central <method> --input-file <json-path> --json`.
 `--input-file` requires a real file path. Reads share a 60-second cache; manual
 refresh bypasses it. Different machines' accounts are not merged by email.
 
 Settings in Installed plugins → JetBrains Central:
 `centralCommand` (executable path, default `central`),
 `builtinPluginsDirectory` (optional path on the execution machine),
-`profiles` (JSON work profiles). Reload `central` after changing settings.
+`profiles` (JSON work profiles). Reload `jetbrains-central` after changing settings.
 Keep existing profile IDs stable because threads persist them.

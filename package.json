@@ -1,5 +1,5 @@
 {
-  "name": "bb-plugin-central",
+  "name": "bb-plugin-jetbrains-central",
   "version": "0.1.1",
   "license": "MIT",
   "type": "module",
@@ -9,7 +9,7 @@
   },
   "bb": {
     "name": "JetBrains Central",
-    "description": "Use work AI subscriptions alongside personal accounts and see shared JetBrains Central credits in BB.",
+    "description": "Unofficial enthusiast plugin for JetBrains Central work AI providers and shared credit tracking in BB.",
     "branding": {
       "icon": "./icons/jetbrains.svg"
     },

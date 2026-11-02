@@ -3,6 +3,8 @@
 
 # JetBrains Central for BB
 
+> This is an unofficial plugin developed independently by an enthusiast. It is not an official JetBrains product.
+
 Separate work AI providers in bb through JetBrains Central:
 
 - **Codex JetBrains Air** — `central-codex`.
@@ -44,7 +46,7 @@ bb plugin install https://github.com/SergeyZh/bb-plugin-jetbrains-central
 
 bb downloads the source, installs the dependencies, and builds the plugin automatically. You do not need to clone the repository or run npm or build commands yourself. This source tracks the repository's default branch.
 
-After installation, select **Codex JetBrains Air**, **Claude Code JetBrains Air**, or **Pi JetBrains Air** when creating a thread. Plugin settings are available under **Settings → Installed plugins → JetBrains Central**. The installed plugin ID is `central`.
+After installation, select **Codex JetBrains Air**, **Claude Code JetBrains Air**, or **Pi JetBrains Air** when creating a thread. Plugin settings are available under **Settings → Installed plugins → JetBrains Central**. The installed plugin ID is `jetbrains-central`.
 
 ### Updates
 
@@ -52,7 +54,7 @@ Check for and apply updates:
 
 ```sh
 bb plugin outdated
-bb plugin update central
+bb plugin update jetbrains-central
 ```
 
 Updates are manual. If an update cannot activate successfully, bb restores the previous version.
@@ -67,7 +69,7 @@ For versioned releases, update `version` in `package.json` and `package-lock.jso
 bb plugin install 'git:https://github.com/SergeyZh/bb-plugin-jetbrains-central.git@^0.1.0'
 ```
 
-This range accepts compatible `0.1.x` releases when the user runs `bb plugin update central`. Publish each fix with a new version and tag; do not move existing release tags. Installing from npm instead would require publishing a package with prebuilt bundles; npm publication is not required for GitHub installation.
+This range accepts compatible `0.1.x` releases when the user runs `bb plugin update jetbrains-central`. Publish each fix with a new version and tag; do not move existing release tags. Installing from npm instead would require publishing a package with prebuilt bundles; npm publication is not required for GitHub installation.
 
 ### Local installation for developers
 
@@ -79,7 +81,7 @@ bb plugin build
 bb plugin install .
 ```
 
-A local installation uses that directory in place, so keep it on disk. After editing the source, rebuild and run `bb plugin reload central`. Local installations do not receive GitHub updates through `bb plugin update`.
+A local installation uses that directory in place, so keep it on disk. After editing the source, rebuild and run `bb plugin reload jetbrains-central`. Local installations do not receive GitHub updates through `bb plugin update`.
 
 ## How routing works
 
@@ -115,7 +117,7 @@ Settings → Installed plugins → JetBrains Central:
 After changing settings, run:
 
 ```sh
-bb plugin reload central
+bb plugin reload jetbrains-central
 ```
 
 A profile contains a permanent `id`, a `displayName`, the Central agent name (`agent`), a bridge (`bridge`), and additional agent CLI arguments (`args`). `runArgs` are passed to `central run` itself before the `--` separator: for example, `['--provider=openai']` for Copilot. Available bridges are `codex`, `claude-code`, `pi`, and `acp`. Do not change the ID of a profile that is already in use: thread history references it.

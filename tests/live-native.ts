@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {createInterface} from 'node:readline';
 const profileId=process.argv[2]??'codex';
 const dir=mkdtempSync(join(tmpdir(),'bb-central-live-'));
-const script=`import {createInterface} from 'node:readline';import {experimental_providerBridge as b} from './dist/host.js';b.start({pluginId:'central',dataDir:process.env.TEST_DIR,tempDir:process.env.TEST_DIR});createInterface({input:process.stdin}).on('line',l=>b.handleLine(l)).on('close',()=>{b.onClose();setTimeout(()=>process.exit(0),2500)});`;
+const script=`import {createInterface} from 'node:readline';import {experimental_providerBridge as b} from './dist/host.js';b.start({pluginId:'jetbrains-central',dataDir:process.env.TEST_DIR,tempDir:process.env.TEST_DIR});createInterface({input:process.stdin}).on('line',l=>b.handleLine(l)).on('close',()=>{b.onClose();setTimeout(()=>process.exit(0),2500)});`;
 const child=spawn(process.execPath,['--input-type=module','-e',script],{env:{...process.env,TEST_DIR:dir},stdio:['pipe','pipe','pipe']});
 let seq=0;
 const waiters=new Map<number,{resolve:(v:any)=>void,reject:(e:Error)=>void}>();

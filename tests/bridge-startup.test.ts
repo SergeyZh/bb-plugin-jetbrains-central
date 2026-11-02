@@ -23,7 +23,7 @@ test('cold start acknowledges BB skills setup, then applies roots before thread/
  `);
  const bin=join(dir,'bin');mkdirSync(bin);
  writeFileSync(join(bin,'codex'),'#!/bin/sh\nexit 0\n',{mode:0o700});
- const script=`import {createInterface} from 'node:readline';import {experimental_providerBridge as b} from './dist/host.js';b.start({pluginId:'central',dataDir:process.env.TEST_DIR,tempDir:process.env.TEST_DIR});createInterface({input:process.stdin}).on('line',l=>b.handleLine(l)).on('close',()=>{b.onClose();setTimeout(()=>process.exit(0),2300)});`;
+ const script=`import {createInterface} from 'node:readline';import {experimental_providerBridge as b} from './dist/host.js';b.start({pluginId:'jetbrains-central',dataDir:process.env.TEST_DIR,tempDir:process.env.TEST_DIR});createInterface({input:process.stdin}).on('line',l=>b.handleLine(l)).on('close',()=>{b.onClose();setTimeout(()=>process.exit(0),2300)});`;
  const child=spawn(process.execPath,['--input-type=module','-e',script],{env:{...process.env,TEST_DIR:dir,PATH:bin+delimiter+process.env.PATH},stdio:['pipe','pipe','pipe']});
  let seq=0;
  const waiters=new Map<number,{resolve:(result:any)=>void;reject:(error:Error)=>void;timer:NodeJS.Timeout}>();

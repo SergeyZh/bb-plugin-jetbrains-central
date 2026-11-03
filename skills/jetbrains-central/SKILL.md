@@ -29,6 +29,7 @@ refresh bypasses it. Different machines' accounts are not merged by email.
 
 Settings in Installed plugins → JetBrains Central:
 `centralCommand` (executable path, default `central`),
+`showCreditsInBanner` (default `true`; hides only banner credits, applies immediately),
 `builtinPluginsDirectory` (optional path on the execution machine),
-`profiles` (JSON work profiles). Reload `jetbrains-central` after changing settings.
+`profiles` (JSON work profiles). Reload `jetbrains-central` after changing paths or profiles.
 Keep existing profile IDs stable because threads persist them.

@@ -5,6 +5,7 @@ import { registerUsage } from "./usage-server.js";
 
 export default async function central(bb: BbPluginApi) {
   const settings = bb.settings.define({
+    showCreditsInBanner: { type: "boolean", label: "Show credits in banner", default: true },
     centralCommand: { type: "string", label: "Central executable", default: "central" },
     builtinPluginsDirectory: { type: "string", label: "BB built-in plugins directory (optional)", default: "" },
     profiles: { type: "string", label: "Work provider profiles (JSON)", default: JSON.stringify(defaults) },

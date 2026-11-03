@@ -59,6 +59,31 @@ test("banner is hidden in card mode and personal threads have no Central row", a
   } finally { personal.lifecycle.unmount(); }
 });
 
+test("banner credit setting hides the segment without fetching usage and preserves context card credits", async () => {
+  const app = await loadPluginApp(() => import("../app.js"));
+  const segment = app.threadContextSegments[0];
+  for (const enabled of [true, false]) {
+    const slot = renderSlot({ component: (input: ExperimentalThreadContextSegmentProps) =>
+      segment.useVisible?.(input) ? createElement(segment.summary, input) : null }, props, {
+      settings: { showCreditsInBanner: enabled }, threadContextKind: "banner",
+      experimental_rpcContract: threadUsageContract, rpc: { threadUsage: () => value },
+    });
+    try {
+      if (enabled) await slot.findByText("Central: 193 / 200 credits left");
+      else {
+        assert.equal(slot.container.textContent, "");
+        assert.equal(slot.inspection.rpcCalls.length, 0);
+      }
+    } finally { slot.lifecycle.unmount(); }
+  }
+  const row = renderSlot(app.threadContextCardRows[0], props, {
+    settings: { showCreditsInBanner: false }, threadContextKind: "card",
+    experimental_rpcContract: threadUsageContract, rpc: { threadUsage: () => value },
+  });
+  try { await row.findByText(/193 \/ 200 credits left/); }
+  finally { row.lifecycle.unmount(); }
+});
+
 test("stale credits retain their value and auth failures explain how to sign in", async () => {
   const app = await loadPluginApp(() => import("../app.js"));
   const slot = renderSlot({ component: app.threadContextSegments[0].details! }, props, {

@@ -111,10 +111,11 @@ Reads share a 60-second cache per machine. Visible thread context refreshes ever
 Settings → Installed plugins → JetBrains Central:
 
 - `centralCommand`: path to Central; defaults to `central`.
+- `showCreditsInBanner`: show Central credits above the composer; enabled by default. Applies immediately. Context card and Provider usage credits remain available.
 - `builtinPluginsDirectory`: optional path to the installed bb's `builtin-plugins` directory **on the machine running the thread**.
 - `profiles`: JSON array of work profiles.
 
-After changing settings, run:
+After changing executable paths or profiles, run:
 
 ```sh
 bb plugin reload jetbrains-central

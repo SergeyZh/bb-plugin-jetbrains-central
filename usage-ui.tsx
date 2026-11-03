@@ -57,7 +57,7 @@ function usageTitle(value: CentralUsage | undefined, error: boolean): string {
 export function CentralUsageSummary({ threadId, onToggle, isExpanded }: ExperimentalThreadContextSegmentProps) {
   const { value, error } = useUsage(threadId);
   if (value === null) return null;
-  return <button type="button" onClick={onToggle} aria-expanded={isExpanded} title={usageTitle(value, error)} className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground">
+  return <button type="button" onClick={onToggle} aria-expanded={isExpanded} title={usageTitle(value, error)} className="inline-flex min-h-6 min-w-0 items-center gap-1.5 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground">
     <Icon name="ChartColumn" className="size-3.5 shrink-0" />
     <span className="truncate">Central: {usageSummary(value, error)}</span>
   </button>;

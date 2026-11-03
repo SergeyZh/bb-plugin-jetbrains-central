@@ -111,10 +111,11 @@ Codex, Claude Code и Pi используют мосты, поставляемы
 Settings → Installed plugins → JetBrains Central:
 
 - `centralCommand`: путь к Central, по умолчанию `central`.
+- `showCreditsInBanner`: показывать кредиты Central в баннере над полем ввода; включено по умолчанию. Применяется сразу. Кредиты в карточке контекста и Provider usage остаются доступны.
 - `builtinPluginsDirectory`: необязательный путь к каталогу `builtin-plugins` установленного bb **на машине выполнения**.
 - `profiles`: JSON-массив рабочих профилей.
 
-После изменения настроек выполните:
+После изменения путей к исполняемым файлам или профилей выполните:
 
 ```sh
 bb plugin reload jetbrains-central

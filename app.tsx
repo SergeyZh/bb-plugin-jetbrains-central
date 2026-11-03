@@ -1,4 +1,4 @@
-import { definePluginApp, experimental_useThreadContextKind } from "@get-bb/plugin-sdk/app";
+import { definePluginApp, experimental_useThreadContextKind, useSettings } from "@get-bb/plugin-sdk/app";
 import { CentralIcon, CentralProviderIcon } from "./provider-icon.js";
 import type { ProviderMark } from "./artwork.js";
 import { CentralUsageSummary, CentralUsageDetails, CentralUsageRow, useCentralThread } from "./usage-ui.js";
@@ -10,7 +10,9 @@ export default definePluginApp(app => {
     summary: CentralUsageSummary, details: CentralUsageDetails,
     useVisible: ({ threadId }) => {
       const central = useCentralThread(threadId);
-      return experimental_useThreadContextKind() === "banner" && central;
+      const kind = experimental_useThreadContextKind();
+      const { values } = useSettings();
+      return kind === "banner" && central && values?.showCreditsInBanner !== false;
     },
   });
   app.slots.experimental_threadContextCardRow({

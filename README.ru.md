@@ -113,13 +113,15 @@ Settings → Installed plugins → JetBrains Central:
 - `centralCommand`: путь к Central, по умолчанию `central`.
 - `showCreditsInBanner`: показывать кредиты Central в баннере над полем ввода; включено по умолчанию. Применяется сразу. Кредиты в карточке контекста и Provider usage остаются доступны.
 - `builtinPluginsDirectory`: необязательный путь к каталогу `builtin-plugins` установленного bb **на машине выполнения**.
-- `profiles`: JSON-массив рабочих профилей.
+- `profiles`: JSON-массив рабочих профилей. Поле многострочное, JSON можно форматировать с отступами.
 
 После изменения путей к исполняемым файлам или профилей выполните:
 
 ```sh
 bb plugin reload jetbrains-central
 ```
+
+Профили читаются только при запуске плагина, поэтому без перезапуска изменения не применяются. Простаивающие диалоги переживают перезапуск и продолжаются при следующем сообщении. Перед перезапуском дождитесь, пока в диалогах Central не будет выполняющихся запросов. Новые аргументы получают только новые процессы агента.
 
 Профиль содержит постоянный `id`, `displayName`, имя агента для Central (`agent`), мост (`bridge`) и дополнительные аргументы CLI агента (`args`). `runArgs` передаются самому `central run` перед разделителем `--`: например, `['--provider=openai']` для Copilot. Мосты: `codex`, `claude-code`, `pi`, `acp`. Не меняйте ID уже используемого профиля: на него ссылается история диалогов.
 
@@ -136,6 +138,29 @@ bb plugin reload jetbrains-central
 ```
 
 Замените заглушки именем агента из `central run --help` и реальными аргументами ACP его CLI. Central должен поддерживать агента, а CLI должен уметь ACP через stdin/stdout. Плагин не добавляет в Central поддержку произвольного агента и не устанавливает CLI автоматически. ACP-транспорт покрыт локальным протокольным тестом; реальные Gemini, Junie и Copilot отдельно не проверялись.
+
+### Fable 5.2 в Claude Code JetBrains Air
+
+Central запускает Claude Code через свой локальный шлюз. В таком режиме Claude Code показывает Fable, только если задана переменная `ANTHROPIC_DEFAULT_FABLE_MODEL`. Central 2.2.0 её не задаёт, поэтому модели нет в списке, хотя шлюз её принимает. Проверить доступность:
+
+```sh
+central run claude -- -p --model claude-fable-5-2 "say ok"
+```
+
+Если ответ пришёл, добавьте переменную в `args` профиля `claude-code`:
+
+```json
+{
+  "id": "claude-code",
+  "displayName": "Claude Code JetBrains Air",
+  "agent": "claude",
+  "bridge": "claude-code",
+  "runArgs": [],
+  "args": ["--settings", "{\"env\":{\"ANTHROPIC_DEFAULT_FABLE_MODEL\":\"claude-fable-5-2\"}}"]
+}
+```
+
+Остальные профили массива оставьте без изменений. Сохраните настройку в интерфейсе или командой `bb plugin config jetbrains-central set profiles '<JSON>'`, затем выполните `bb plugin reload jetbrains-central`. Список моделей кэшируется до двух минут; если Fable не появилась сразу, откройте выбор модели позже. Когда Central начнёт задавать переменную сам, аргумент можно удалить.
 
 ## Проверки
 

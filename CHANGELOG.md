@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3 — 2026-11-12
+
+- The **Work provider profiles (JSON)** setting is now a multi-line field, and its default value is indented.
+- Documented how to show Fable 5.2 in Claude Code JetBrains Air and how reloading affects running threads.
+
 ## 0.1.2 — 2026-11-03
 
 - Fixed vertical alignment of Central credits when they are the only item in the thread context banner.

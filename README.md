@@ -113,13 +113,15 @@ Settings → Installed plugins → JetBrains Central:
 - `centralCommand`: path to Central; defaults to `central`.
 - `showCreditsInBanner`: show Central credits above the composer; enabled by default. Applies immediately. Context card and Provider usage credits remain available.
 - `builtinPluginsDirectory`: optional path to the installed bb's `builtin-plugins` directory **on the machine running the thread**.
-- `profiles`: JSON array of work profiles.
+- `profiles`: JSON array of work profiles. The field is multi-line, so you can format the JSON with indentation.
 
 After changing executable paths or profiles, run:
 
 ```sh
 bb plugin reload jetbrains-central
 ```
+
+Profiles are read only when the plugin starts, so changes do not apply without a reload. Idle threads survive the reload and resume on their next message. Before reloading, wait until no Central thread has a turn in progress. Only new agent processes receive new arguments.
 
 A profile contains a permanent `id`, a `displayName`, the Central agent name (`agent`), a bridge (`bridge`), and additional agent CLI arguments (`args`). `runArgs` are passed to `central run` itself before the `--` separator: for example, `['--provider=openai']` for Copilot. Available bridges are `codex`, `claude-code`, `pi`, and `acp`. Do not change the ID of a profile that is already in use: thread history references it.
 
@@ -136,6 +138,29 @@ To connect an additional ACP agent, add a profile like this to the array alongsi
 ```
 
 Replace the placeholders with an agent name from `central run --help` and the actual ACP arguments for its CLI. Central must support the agent, and the CLI must support ACP over stdin/stdout. The plugin does not add support for arbitrary agents to Central or install CLIs automatically. ACP transport is covered by a local protocol test; real Gemini, Junie, and Copilot integrations have not been tested separately.
+
+### Fable 5.2 in Claude Code JetBrains Air
+
+Central launches Claude Code through its local gateway. In that mode, Claude Code lists Fable only when `ANTHROPIC_DEFAULT_FABLE_MODEL` is set. Central 2.2.0 does not set it, so the model is missing from the list even though the gateway accepts it. Check availability:
+
+```sh
+central run claude -- -p --model claude-fable-5-2 "say ok"
+```
+
+If you get a reply, add the variable to the `args` of the `claude-code` profile:
+
+```json
+{
+  "id": "claude-code",
+  "displayName": "Claude Code JetBrains Air",
+  "agent": "claude",
+  "bridge": "claude-code",
+  "runArgs": [],
+  "args": ["--settings", "{\"env\":{\"ANTHROPIC_DEFAULT_FABLE_MODEL\":\"claude-fable-5-2\"}}"]
+}
+```
+
+Keep the other profiles in the array unchanged. Save the setting in the UI or with `bb plugin config jetbrains-central set profiles '<JSON>'`, then run `bb plugin reload jetbrains-central`. The model list is cached for up to two minutes; if Fable does not appear right away, open the model picker again later. Once Central sets the variable itself, you can remove the argument.
 
 ## Verification
 

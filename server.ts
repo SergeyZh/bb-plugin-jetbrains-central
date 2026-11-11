@@ -8,7 +8,7 @@ export default async function central(bb: BbPluginApi) {
     showCreditsInBanner: { type: "boolean", label: "Show credits in banner", default: true },
     centralCommand: { type: "string", label: "Central executable", default: "central" },
     builtinPluginsDirectory: { type: "string", label: "BB built-in plugins directory (optional)", default: "" },
-    profiles: { type: "string", label: "Work provider profiles (JSON)", default: JSON.stringify(defaults) },
+    profiles: { type: "string", label: "Work provider profiles (JSON)", experimental_multiline: true, default: JSON.stringify(defaults, null, 2) },
   });
   const values = await settings.get();
   const profiles = parseProfiles(JSON.parse(values.profiles));

@@ -33,3 +33,6 @@ Settings in Installed plugins → JetBrains Central:
 `builtinPluginsDirectory` (optional path on the execution machine),
 `profiles` (JSON work profiles). Reload `jetbrains-central` after changing paths or profiles.
 Keep existing profile IDs stable because threads persist them.
+Central does not set `ANTHROPIC_DEFAULT_FABLE_MODEL`, so Claude Code hides Fable behind
+Central's gateway. To show Fable 5.2, add `["--settings", "{\"env\":{\"ANTHROPIC_DEFAULT_FABLE_MODEL\":\"claude-fable-5-2\"}}"]`
+to the `claude-code` profile's `args`, then reload `jetbrains-central` when no Central turn is running.
